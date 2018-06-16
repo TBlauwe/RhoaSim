@@ -1,0 +1,65 @@
+<launch>
+
+	<arg name="x"           />
+	<arg name="y"           />
+    <arg name="robot_name"  />
+
+	<node pkg="amcl" type="amcl" name="amcl" output="log" ns="$(arg robot_name)">
+		<param name="odom_frame_id"             value="/$(arg robot_name)_tf/odom"/>
+		<param name="base_frame_id"             value="/$(arg robot_name)_tf/base_footprint"/>
+		<param name="global_frame_id"           value="/$(arg robot_name)_tf/map"/>
+		<param name="use_map_topic"             value="true"/>
+		<param name="first_map_only"            value="true"/>
+		<param name="odom_model_type"           value="diff-corrected"/>
+		<param name="tf_broadcast"              value="false"/>
+
+        <param name="initial_pose_x"            value="$(arg x)"/>
+        <param name="initial_pose_y"            value="$(arg y)"/>
+
+		<remap from="scan" to="lidar/front" />
+    </node>
+
+	<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="log" ns="$(arg robot_name)">
+		<param name="base_global_planner" value="global_planner/GlobalPlanner" />
+		<param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/>
+
+		<rosparam file="$(find rhoa_sim)/config/costmap_common_params.yaml"     command="load" ns="global_costmap" />
+		<rosparam file="$(find rhoa_sim)/config/costmap_common_params.yaml"     command="load" ns="local_costmap" />
+		<rosparam file="$(find rhoa_sim)/config/local_costmap_params.yaml"      command="load" />
+		<rosparam file="$(find rhoa_sim)/config/global_costmap_params.yaml"     command="load" />
+		<rosparam file="$(find rhoa_sim)/config/base_local_planner_params.yaml" command="load" />
+
+		<param name="common_costmap/front_proximity_sensor/sensor_frame" value="/$(arg robot_name)_tf/front_proximity_sensor" />
+		<param name="common_costmap/front_proximity_sensor/topic"        value="/$(arg robot_name)/proximity_sensor/front" />
+		<param name="common_costmap/right_proximity_sensor/sensor_frame" value="/$(arg robot_name)_tf/right_proximity_sensor" />
+		<param name="common_costmap/right_proximity_sensor/topic"        value="/$(arg robot_name)/proximity_sensor/right" />
+		<param name="common_costmap/left_proximity_sensor/sensor_frame"  value="/$(arg robot_name)_tf/left_proximity_sensor" />
+		<param name="common_costmap/left_proximity_sensor/topic"         value="/$(arg robot_name)/proximity_sensor/left" />
+		<param name="common_costmap/front_lidar_sensor/sensor_frame"     value="/$(arg robot_name)_tf/front_lidar" />
+		<param name="common_costmap/front_lidar_sensor/topic"            value="/$(arg robot_name)/lidar/front" />
+
+		<param name="global_costmap/front_proximity_sensor/sensor_frame" value="/$(arg robot_name)_tf/front_proximity_sensor" />
+		<param name="global_costmap/front_proximity_sensor/topic"        value="/$(arg robot_name)/proximity_sensor/front" />
+		<param name="global_costmap/right_proximity_sensor/sensor_frame" value="/$(arg robot_name)_tf/right_proximity_sensor" />
+		<param name="global_costmap/right_proximity_sensor/topic"        value="/$(arg robot_name)/proximity_sensor/right" />
+		<param name="global_costmap/left_proximity_sensor/sensor_frame"  value="/$(arg robot_name)_tf/left_proximity_sensor" />
+		<param name="global_costmap/left_proximity_sensor/topic"         value="/$(arg robot_name)/proximity_sensor/left" />
+		<param name="global_costmap/front_lidar_sensor/sensor_frame"     value="/$(arg robot_name)_tf/front_lidar" />
+		<param name="global_costmap/front_lidar_sensor/topic"            value="/$(arg robot_name)/lidar/front" />
+
+		<param name="local_costmap/front_proximity_sensor/sensor_frame"  value="/$(arg robot_name)_tf/front_proximity_sensor" />
+		<param name="local_costmap/front_proximity_sensor/topic"         value="/$(arg robot_name)/proximity_sensor/front" />
+		<param name="local_costmap/right_proximity_sensor/sensor_frame"  value="/$(arg robot_name)_tf/right_proximity_sensor" />
+		<param name="local_costmap/right_proximity_sensor/topic"         value="/$(arg robot_name)/proximity_sensor/right" />
+		<param name="local_costmap/left_proximity_sensor/sensor_frame"   value="/$(arg robot_name)_tf/left_proximity_sensor" />
+		<param name="local_costmap/left_proximity_sensor/topic"          value="/$(arg robot_name)/proximity_sensor/left" />
+		<param name="local_costmap/front_lidar_sensor/sensor_frame"      value="/$(arg robot_name)_tf/front_lidar" />
+		<param name="local_costmap/front_lidar_sensor/topic"             value="/$(arg robot_name)/lidar/front" />
+
+		<param name="global_costmap/global_frame" value="/$(arg robot_name)_tf/map" />
+		<param name="local_costmap/global_frame"  value="/$(arg robot_name)_tf/odom" />
+
+		<param name="global_costmap/robot_base_frame" value="/$(arg robot_name)_tf/chassis" />
+		<param name="local_costmap/robot_base_frame" value="/$(arg robot_name)_tf/chassis" />
+	</node>
+</launch>

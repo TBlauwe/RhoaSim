@@ -1,0 +1,20 @@
+{
+  "logger": {
+    "console": {
+      "available": true,
+      "level": "DEBUG"
+    },
+    "file": {
+      "available": true,
+      "level": "INFO",
+      "filename" : "example_log.txt"
+    }
+  },
+  "server": {
+    "address": "",
+    "port": 25568
+  },
+  "services": [
+    "services"
+  ]
+}

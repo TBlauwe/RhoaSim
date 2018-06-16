@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+	<!--- Overridable arguments -->
+	<arg name="x" />
+	<arg name="y" />
+    <arg name="robot_name" />
+
+	<!--- Enable autonomous navigation -->
+	<include file="$(find rhoa_sim)/launch/rhoa_navigation.launch">
+		<arg name="x"           value="$(arg x)"/>
+		<arg name="y"           value="$(arg y)"/>
+    	<arg name="robot_name"  value="$(arg robot_name)"/>
+	</include>
+
+    <node pkg="rhoa_sim" type="actions_handler.py" name="actions_handler" output="screen" ns="$(arg robot_name)">
+    	<param name="robot_name"  value="$(arg robot_name)"/>
+    </node>
+
+    <node pkg="rhoa_sim" type="action_handler.py" name="action_handler" output="screen" ns="$(arg robot_name)">
+    	<param name="robot_name"  value="$(arg robot_name)"/>
+    </node>
+</launch>

@@ -1,0 +1,29 @@
+<launch>
+	<arg name="x"     default="-1"/>
+	<arg name="y"     default="-1"/>
+    <arg name="world" default="map"/>
+
+    <!-- Launch gazebo -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<arg name="world_name"      value="$(find rhoa_sim)/worlds/$(arg world).world"/>
+        <arg name="use_sim_time"    value="true"/>
+	</include>
+
+    <!-- Launch robot 1 -->
+	<arg name="robot_1_name" value="rhoa" />
+	<group ns="$(arg robot_1_name)">
+		<param name="tf_prefix" value="$(arg robot_1_name)_tf" />
+	</group>
+	<include file="$(find rhoa_sim)/launch/one_rhoa.launch">
+        <arg name="x"           value="$(arg x)" />
+		<arg name="y"           value="$(arg y)" />
+    	<arg name="robot_name"  value="$(arg robot_1_name)"/>
+	</include>
+
+	<!-- Visualization -->
+    <!-- Permet de visualiser les informations d'un robot -->
+    <include file="$(find rhoa_sim)/launch/rhoa_visualization.launch">
+    	<arg name="robot_name"  value="$(arg robot_1_name)"/>
+	</include>
+
+</launch>

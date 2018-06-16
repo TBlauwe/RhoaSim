@@ -1,0 +1,26 @@
+<launch>
+    <!-- To override this arguments through a command line use the following syntax: roslaunch rhoa_sim [name.launch] x:=0.0 y:=0.0 -->
+	<arg name="x"            />
+	<arg name="y"            />
+    <arg name="robot_name"   />
+
+    <!-- Spawn robot world simulation -->
+	<include file="$(find rhoa_sim)/launch/rhoa_spawn.launch">
+        <arg name="x"           value="$(arg x)" />
+		<arg name="y"           value="$(arg y)" />
+    	<arg name="robot_name"  value="$(arg robot_name)"/>
+	</include>
+
+	<!-- OBSERVATION PROCESS -->
+    <include file="$(find rhoa_sim)/launch/rhoa_observation_process.launch">
+    	<arg name="robot_name"  value="$(arg robot_name)"/>
+	</include>
+
+	<!-- ACTION PROCESS -->
+	<include file="$(find rhoa_sim)/launch/rhoa_action_process.launch">
+		<arg name="x"           value="$(arg x)"/>
+		<arg name="y"           value="$(arg y)"/>
+    	<arg name="robot_name"  value="$(arg robot_name)"/>
+	</include>
+
+</launch>

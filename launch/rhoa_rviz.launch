@@ -1,0 +1,8 @@
+<launch>
+  <arg name="model" />
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find rhoa_sim)/robots/rHoa.urdf.xacro'" />
+  <param name="use_gui" value="true"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find rhoa_sim)/config/rhoa.rviz" required="true" />
+</launch>

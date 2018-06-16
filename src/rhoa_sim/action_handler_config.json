@@ -1,0 +1,34 @@
+{
+  "logger": {
+    "console": {
+      "available": false,
+      "level": "DEBUG"
+    },
+    "file": {
+      "available": true,
+      "level": "DEBUG",
+      "filename" : "/tmp/action_handler.txt"
+    }
+  },
+  "context_process": {
+    "address": "localhost",
+    "port": 25565
+  },
+  "learning_process": {
+    "address": "localhost",
+    "port": 25567
+  },
+  "server": {
+    "address": "",
+    "port": 25570,
+    "workers": 1
+  },
+  "client": {
+    "address": "",
+    "port": 25571,
+    "workers_number": 1
+  },
+  "strategies" : {
+    "passage_times" : "mean"
+  }
+}

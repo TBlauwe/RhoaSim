@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+    <!-- Full Simulation with visualization -->
+    <!-- Les noms de chaque robot doivent être différents -->
+
+    <!-- Launch robot 1 -->
+	<arg name="robot_1_name" value="toto" />
+	<group ns="$(arg robot_1_name)">
+		<param name="tf_prefix" value="$(arg robot_1_name)_tf" />
+	</group>
+	<include file="$(find rhoa_sim)/launch/one_rhoa.launch">
+        <arg name="x"           value="-1" />
+		<arg name="y"           value="-1" />
+    	<arg name="robot_name"  value="$(arg robot_1_name)"/>
+	</include>
+
+
+    <!-- Launch robot 2 -->
+	<arg name="robot_2_name" value="titi" />
+	<group ns="$(arg robot_2_name)">
+		<param name="tf_prefix" value="$(arg robot_2_name)_tf" />
+	</group>
+	<include file="$(find rhoa_sim)/launch/one_rhoa.launch">
+        <arg name="x"           value="1" />
+		<arg name="y"           value="1" />
+    	<arg name="robot_name"  value="$(arg robot_2_name)"/>
+	</include>
+</launch>

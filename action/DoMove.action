@@ -1,0 +1,8 @@
+# Define the goal
+string  location
+---
+# Define the result
+uint8   terminalState 
+---
+# Define a feedback message
+uint8   state 

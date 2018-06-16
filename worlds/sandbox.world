@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://aruco_pillar_893</uri>
+      <name>Aruco pillar 0</name>
+      <pose>10 0 0 0 0 0</pose>
+    </include>
+  </world>
+</sdf>

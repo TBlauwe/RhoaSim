@@ -1,0 +1,21 @@
+{
+  "logger": {
+    "console": {
+      "available": false,
+      "level": "DEBUG"
+    },
+    "file": {
+      "available": true,
+      "level": "DEBUG",
+      "filename" : "/tmp/actions_handler_log.txt"
+    }
+  },
+  "server": {
+    "address": "",
+    "port": 25572,
+    "workers": 1
+  },
+  "strategies" : {
+    "passage_times" : "mean"
+  }
+}

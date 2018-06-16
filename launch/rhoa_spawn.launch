@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+    <!-- To override this arguments through a command line use the following syntax: roslaunch rhoa_sim [name.launch] x:=0.0 y:=0.0 -->
+	<arg name="x"           />
+	<arg name="y"           />
+    <arg name="robot_name"  />
+
+    <!-- Spawn rhoa  -->
+	<include file="$(find rhoa_sim)/launch/spawn_urdf.launch">
+		<arg name="x"          value="$(arg x)" />
+		<arg name="y"          value="$(arg y)" />
+		<arg name="z"          value="0.0" />
+		<arg name="robot_file" value="$(find rhoa_sim)/robots/rHoa.urdf.xacro" />
+		<arg name="robot_name" value="$(arg robot_name)" />
+	</include>
+
+</launch>

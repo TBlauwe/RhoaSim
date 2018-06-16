@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rhoa">
+
+    <!-- FICHIER MACRO -->
+    <!-- Ce fichier definit des macros pour instancier un moteur differentiel (NE SUPPORTE QUE DEUX ROUES)-->
+
+    <!-- Exemple d'utilisation:
+            <xacro:m_differential_drive />
+    -->
+
+    <!-- Pour chaque macro que vous utilisez, n'oubliez pas de copier:
+            * Une fois les parametres generaux
+                Ex:
+	                <xacro:property name="chassis_mesh"     value="package://rhoa_sim/meshes/chassis.dae" />
+
+            * Pour chaque instanciation de la macro, les parametres prennant un $PREFIX et remplacer $PREFIX par la valeur desiree
+                <xacro:property name="$PREFIX_camera_offset_x"  value="-0.044885" /> // Puis remplacer $PREFIX par front, par exemple
+    -->
+
+  <!-- ====================================================================== -->
+  <!-- ====================  DIFFERENTIAL DRIVE MACRO  ====================== -->
+  <!-- ====================================================================== -->
+
+    <!-- PARAMETRES-->
+
+    <!-- A COPIER UNE FOIS DANS LE FICHIER -->
+    <!--
+	<xacro:property name="drive_update_rate"       value="100" />
+	<xacro:property name="drive_torque"            value="1" />
+	<xacro:property name="command_topic"           value="cmd_vel" />
+	<xacro:property name="odometry_topic"          value="odom" />
+    -->
+
+	<xacro:macro name="m_differential_drive">
+		<gazebo>
+			<plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+				<legacyMode>false</legacyMode>
+				<alwaysOn>true</alwaysOn>
+				<updateRate>${drive_update_rate}</updateRate>
+				<leftJoint>left_wheel_hinge</leftJoint>
+				<rightJoint>right_wheel_hinge</rightJoint>
+				<wheelSeparation>${wheel_separation}</wheelSeparation>
+				<wheelDiameter>${wheel_radius}</wheelDiameter>
+				<torque>${drive_torque}</torque>
+                <commandTopic>${command_topic}</commandTopic>
+				<odometryTopic>${odometry_topic}</odometryTopic>
+				<odometryFrame>odom</odometryFrame>
+				<robotBaseFrame>base_footprint</robotBaseFrame>
+			</plugin>
+		</gazebo>
+	</xacro:macro>
+
+</robot>

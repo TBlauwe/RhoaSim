@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rhoa">
+	<!-- INCLUDE -->
+    <xacro:include filename="$(find rhoa_sim)/robots/macros/inertia.xacro" />
+
+    <!-- FICHIER MACRO -->
+    <!-- Ce fichier definit des macros pour instancier un chassis -->
+
+    <!-- Exemple d'utilisation:
+            <xacro:m_chassis_cylinder />
+    -->
+
+    <!-- Pour chaque macro que vous utilisez, n'oubliez pas de copier:
+            * Une fois les parametres generaux
+                Ex:
+	                <xacro:property name="chassis_mesh"     value="package://rhoa_sim/meshes/chassis.dae" />
+
+            * Pour chaque instanciation de la macro, les parametres prennant un $PREFIX et remplacer $PREFIX par la valeur desiree
+                <xacro:property name="$PREFIX_camera_offset_x"  value="-0.044885" /> // Puis remplacer $PREFIX par front, par exemple
+    -->
+
+	<!-- =========================================================== -->
+	<!-- ====================  CHASSIS MACRO  ====================== -->
+	<!-- =========================================================== -->
+
+    <!-- NOTE:-->
+
+    <!-- En fonction de la forme de votre chassis, choisissez la bonne macro -->
+    <!-- Deux macros sont disponibles pour le chassis-->
+    <!--    * Une pour un chassis cylindrique, comme le robot-->
+    <!--    * Une pour un chassis rectangulaire-->
+    <!-- Il ne peut y avoir qu'un seul chassis par robot ! -->
+
+
+	<!-- CHASSIS CYLINDRIQUE-->
+
+    <!-- PARAMETRES-->
+
+    <!-- A COPIER UNE FOIS DANS LE FICHIER -->
+    <!--
+	<xacro:property name="chassis_mesh"     value="package://rhoa_sim/meshes/chassis.dae" />
+	<xacro:property name="chassis_material" value="grey" />
+	<xacro:property name="chassis_mass"     value="10" />
+	<xacro:property name="chassis_length"   value="0.3" />
+	<xacro:property name="chassis_radius"   value="0.2" />
+    -->
+
+    <!-- MACRO -->
+	<xacro:macro name="m_chassis_cylinder" >
+		<link name="base_footprint" />
+
+		<joint name="base_joint" type="fixed">
+			<parent link="base_footprint"/>
+			<child link="chassis"/>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<axis xyz="0 0 0" />
+		</joint>
+
+		<link name="chassis">
+			<visual>
+				<geometry>
+					<mesh filename="${chassis_mesh}" />
+				</geometry>
+				<material name="${chassis_material}" />
+			</visual>
+			<collision>
+				<geometry>
+					<cylinder length="${chassis_length}" radius="${chassis_radius}" />
+				</geometry>
+				<origin rpy="0 0 0" xyz="0 0 ${chassis_length/2}"/>
+			</collision>
+			<inertial>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<pose xyz="0 0 ${chassis_length/2}" rpy="0 0 0" />
+				<mass value="${chassis_mass}" />
+				<xacro:box_inertia m="${chassis_mass}" x="${chassis_radius}" y="${chassis_radius}" z="${chassis_length}"/>
+			</inertial>
+		</link>
+		<gazebo reference="chassis">
+			<material>Gazebo/Grey</material>
+		</gazebo>
+	</xacro:macro>
+
+	<!-- CHASSIS RECTANGULAIRE-->
+
+    <!-- PARAMETRES-->
+
+    <!-- A COPIER UNE FOIS DANS LE FICHIER -->
+    <!--
+	<xacro:property name="chassis_mesh"     value="package://rhoa_sim/meshes/chassis.dae" />
+	<xacro:property name="chassis_material" value="grey" />
+	<xacro:property name="chassis_mass"     value="10" />
+	<xacro:property name="chassis_size_x"   value="0.3" />
+	<xacro:property name="chassis_size_y"   value="0.2" />
+	<xacro:property name="chassis_size_z"   value="0.2" />
+    -->
+
+    <!-- MACRO -->
+	<xacro:macro name="m_chassis_box" >
+		<link name="base_footprint" />
+
+		<joint name="base_joint" type="fixed">
+			<parent link="base_footprint"/>
+			<child link="chassis"/>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<axis xyz="0 0 0" />
+		</joint>
+
+		<link name="chassis">
+			<visual>
+				<geometry>
+					<mesh filename="${chassis_mesh}" />
+				</geometry>
+				<material name="${chassis_material}" />
+			</visual>
+			<collision>
+				<geometry>
+					<box size="${chassis_size_x} ${chassis_size_y} ${chassis_size_z}"/>
+				</geometry>
+				<origin rpy="0 0 0" xyz="0 0 ${chassis_length/2}"/>
+			</collision>
+			<inertial>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<pose xyz="0 0 ${chassis_length/2}" rpy="0 0 0" />
+				<mass value="${chassis_mass}" />
+				<xacro:box_inertia m="${chassis_mass}" x="${chassis_size_x}" y="${chassis_size_y}" z="${chassis_size_z}"/>
+			</inertial>
+		</link>
+		<gazebo reference="chassis">
+			<material>Gazebo/Grey</material>
+		</gazebo>
+	</xacro:macro>
+
+</robot>

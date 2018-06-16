@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rhoa">
+	<!-- INCLUDE -->
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/inertia.xacro" />
+
+    <!-- FICHIER MACRO -->
+    <!-- Ce fichier definit des macros pour instancier un lidar -->
+
+    <!-- Exemple d'utilisation:
+            <xacro:m_wheel prefix="right" offset="${right_wheel_offset}" />
+    -->
+
+    <!-- Pour chaque macro que vous utilisez, n'oubliez pas de copier:
+            * Une fois les parametres generaux
+                Ex:
+	                <xacro:property name="chassis_mesh"     value="package://rhoa_sim/meshes/chassis.dae" />
+
+            * Pour chaque instanciation de la macro, les parametres prennant un $PREFIX et remplacer $PREFIX par la valeur desiree
+                <xacro:property name="$PREFIX_camera_offset_x"  value="-0.044885" /> // Puis remplacer $PREFIX par front, par exemple
+    -->
+
+  <!-- ========================================================= -->
+  <!-- ====================  LIDAR MACRO  ====================== -->
+  <!-- ========================================================= -->
+
+    <!-- NOTE:-->
+    <!-- Pour les parametres, n'oubliez pas de remplacer $PREFIX par le prefix specifie lors de l'instanciation de la macro -->
+
+    <!-- PARAMETRES-->
+
+    <!-- A COPIER UNE FOIS DANS LE FICHIER -->
+    <!--
+	<xacro:property name="lidar_mesh"             value="package://rhoa_sim/meshes/sensor.dae" />
+	<xacro:property name="lidar_material"         value="blue" />
+	<xacro:property name="lidar_mass"             value="0.1" />
+	<xacro:property name="lidar_size_x"           value="0.03" />
+	<xacro:property name="lidar_size_y"           value="0.03" />
+	<xacro:property name="lidar_size_z"           value="0.03" />
+	<xacro:property name="lidar_optic_offset"     value="0.014 0 0.014971" />
+
+	<xacro:property name="lidar_visualize"        value="false" />
+	<xacro:property name="lidar_update_rate"      value="40" />
+	<xacro:property name="lidar_scan_sample"      value="720" />
+	<xacro:property name="lidar_scan_resolution"  value="1" />
+	<xacro:property name="lidar_scan_min_angle"   value="${pi/2}" />
+	<xacro:property name="lidar_scan_max_angle"   value="-${pi/2}" />
+	<xacro:property name="lidar_range_min"        value="0.10" />
+	<xacro:property name="lidar_range_max"        value="30.0" />
+	<xacro:property name="lidar_range_resolution" value="0.01" />
+	<xacro:property name="lidar_noise_type"       value="gaussian" />
+	<xacro:property name="lidar_noise_mean"       value="0.0" />
+	<xacro:property name="lidar_noise_stddev"     value="0.01" />
+    <xacro:property name="lidar_topic_name"       value="lidar" />
+	<xacro:property name="lidar_noise_stddev"     value="0.01" />
+    -->
+
+    <!-- A COPIER POUR CHAQUE INSTACIATION, en remplacant $PREFIX par des valeurs differentes pour chaque instanciation(Par exemple: front, left, ...) -->
+    <!--
+	<xacro:property name="$PREFIX_lidar_offset"   value="0.16265 0 0.01" />
+	<xacro:property name="$PREFIX_lidar_rpy"      value="0.0 0.0 0.0" />
+    -->
+	<xacro:macro name="m_lidar" params="prefix offset rpy">
+        <link name="${prefix}_lidar_anchor" />
+		<link name="${prefix}_lidar">
+			<visual>
+				<geometry>
+					<mesh filename="${lidar_mesh}" />
+				</geometry>
+				<material name="${lidar_material}" />
+			</visual>
+			<inertial>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<mass value="${lidar_mass}" />
+				<xacro:box_inertia m="${lidar_mass}" x="${lidar_size_x}"  y="${lidar_size_y}" z="${lidar_size_z}"/>
+			</inertial>
+		</link>
+		<joint name="${prefix}_lidar_fixation" type="fixed">
+			<parent link="chassis" />
+			<child link="${prefix}_lidar" />
+            <origin rpy="${rpy}" xyz="${offset}"/>
+			<axis xyz="0 0 0" />
+		</joint>
+		<joint name="${prefix}_lidar_anchor_fixation" type="fixed">
+			<parent link="${prefix}_lidar" />
+			<child link="${prefix}_lidar_anchor" />
+			<origin rpy="0 0 0" xyz="${lidar_optic_offset}"/>
+			<axis xyz="0 0 0" />
+		</joint>
+		<gazebo reference="${prefix}_lidar_anchor">
+			<sensor type="ray" name="${prefix}_lidar">
+				<visualize>${lidar_visualize}</visualize>
+				<update_rate>${lidar_update_rate}</update_rate>
+				<ray>
+					<scan>
+						<horizontal>
+							<samples>${lidar_scan_sample}</samples>
+							<resolution>${lidar_scan_resolution}</resolution>
+							<min_angle>${lidar_scan_min_angle}</min_angle>
+							<max_angle>${lidar_scan_max_angle}</max_angle>
+						</horizontal>
+					</scan>
+					<range>
+						<min>${lidar_range_min}</min>
+						<max>${lidar_range_max}</max>
+						<resolution>${lidar_range_resolution}</resolution>
+					</range>
+					<noise>
+						<type>${lidar_noise_type}</type>
+						<mean>${lidar_noise_mean}</mean>
+						<stddev>${lidar_noise_stddev}</stddev>
+					</noise>
+				</ray>
+				<plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+                    <topicName>${lidar_topic_name}/${prefix}</topicName>
+					<frameName>${prefix}_lidar</frameName>
+				</plugin>
+			</sensor>
+		</gazebo>
+		<gazebo reference="${prefix}_lidar">
+			<material>Gazebo/Blue</material>
+		</gazebo>
+	</xacro:macro>
+</robot>

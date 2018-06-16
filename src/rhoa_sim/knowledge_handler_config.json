@@ -1,0 +1,30 @@
+{
+  "logger": {
+    "console": {
+      "available": false,
+      "level": "DEBUG"
+    },
+    "file": {
+      "available": true,
+      "level": "DEBUG",
+      "filename" : "/tmp/knowledge_handler.txt"
+    }
+  },
+  "context_process": {
+    "address": "localhost",
+    "port": 25565
+  },
+  "server": {
+    "address": "",
+    "port": 25574,
+    "workers": 1
+  },
+  "client": {
+    "address": "",
+    "port": 25575,
+    "workers_number": 1
+  },
+  "strategies" : {
+    "passage_times" : "mean"
+  }
+}

@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rhoa">
+
+	<!-- Pour plus d'informations sur les fichiers .xacro, voir le lien ci-dessous : -->
+	<!-- http://wiki.ros.org/urdf/Tutorials/Using%20Xacro%20to%20Clean%20Up%20a%20URDF%20File  -->
+
+	<!-- Fichier fait notamment grace au lien suivant : -->
+	<!-- https://www.generationrobots.com/blog/en/2015/02/robotic-simulation-scenarios-with-gazebo-and-ros/#SetupWorkspace -->
+
+	<!-- INCLUDE -->
+    <xacro:include filename="$(find rhoa_sim)/robots/macros/chassis.xacro" />
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/wheel.xacro" />
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/caster.xacro" />
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/camera.xacro" />
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/proximitySensor.xacro" />
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/lidar.xacro" />
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/diffDrive.xacro" />
+
+	<xacro:include filename="$(find rhoa_sim)/materials/materials.xacro" />
+
+	<!-- ======================================================================================= -->
+	<!-- ==================================  ROBOTS PARAMETERS ================================= -->
+	<!-- ======================================================================================= -->
+	<xacro:property name="robot_namespace"          value="" />
+
+	<!-- =========== -->
+	<!-- = CHASSIS = -->
+	<!-- =========== -->
+	<xacro:property name="chassis_mesh"             value="package://rhoa_sim/meshes/chassis.dae" />
+	<xacro:property name="chassis_material"         value="grey" />
+	<xacro:property name="chassis_mass"             value="10" />
+	<xacro:property name="chassis_length"           value="0.3" />
+	<xacro:property name="chassis_radius"           value="0.2" />
+
+	<!-- ========= -->
+	<!-- = WHEEL = -->
+	<!-- ========= -->
+	<xacro:property name="wheel_mesh"               value="package://rhoa_sim/meshes/wheel.dae" />
+	<xacro:property name="wheel_material"           value="black" />
+	<xacro:property name="wheel_mass"               value="1" />
+	<xacro:property name="wheel_length"             value="0.05" />
+	<xacro:property name="wheel_radius"             value="0.1" />
+	<xacro:property name="wheel_damping"            value="0.0" />
+
+    <!-- Left wheel -->
+	<xacro:property name="left_wheel_offset"        value="0.0 0.15 0.0" />
+
+    <!-- Right wheel -->
+	<xacro:property name="right_wheel_offset"       value="0.0 -0.15 0.0" />
+
+    <!-- CRITICAL -->
+    <!-- N'oubliez pas de specifier la distance qui separe les deux roues motrices -->
+	<xacro:property name="wheel_separation"         value="0.30" />
+
+	<!-- ========== -->
+	<!-- = CASTER = -->
+	<!-- ========== -->
+	<xacro:property name="caster_mass"              value="0.1" />
+	<xacro:property name="caster_radius"            value="0.02" />
+	<xacro:property name="caster_material"          value="red" />
+
+    <!-- Front caster -->
+	<xacro:property name="front_caster_offset"      value="0.15 0.0 -0.08" />
+
+    <!-- Back caster -->
+	<xacro:property name="back_caster_offset"       value="-0.15 0.0 -0.08" />
+
+	<!-- ========== -->
+	<!-- = CAMERA = -->
+	<!-- ========== -->
+	<xacro:property name="camera_mesh"              value="package://rhoa_sim/meshes/camera.dae" />
+	<xacro:property name="camera_material"          value="orange" />
+	<xacro:property name="camera_mass"              value="0.1" />
+	<xacro:property name="camera_size_x"            value="0.06" />
+	<xacro:property name="camera_size_y"            value="0.11" />
+	<xacro:property name="camera_size_z"            value="0.04" />
+	<xacro:property name="camera_optic_offset"      value="0.032895 0.0 0.022207" />
+
+	<!-- camera settings -->
+	<xacro:property name="camera_visualize"         value="false" />
+	<xacro:property name="camera_update_rate"       value="30.0" />
+	<xacro:property name="camera_frame_rate"        value="30.0" />
+	<xacro:property name="camera_horizontal_fov"    value="2" />
+	<xacro:property name="camera_image_size_y"      value="1920" />
+	<xacro:property name="camera_image_size_z"      value="1080" />
+	<xacro:property name="camera_image_format"      value="R8G8B8" />
+	<xacro:property name="camera_clip_near"         value="0.02" />
+	<xacro:property name="camera_clip_far"          value="300" />
+	<xacro:property name="camera_noise_type"        value="gaussian" />
+	<xacro:property name="camera_noise_mean"        value="0.0" />
+	<xacro:property name="camera_noise_stddev"      value="0.007" />
+	<xacro:property name="camera_name"              value="camera" />
+	<xacro:property name="camera_image_topic_name"  value="image_raw" />
+	<xacro:property name="camera_info_topic_name"   value="camera_info" />
+
+    <!-- Front camera -->
+	<xacro:property name="front_camera_offset"    value="-0.044885 0.0 0.315" />
+	<xacro:property name="front_camera_rpy"        value="0.0 0.0 0.0" />
+
+	<!-- ==================== -->
+	<!-- = PROXIMITY SENSOR = -->
+	<!-- ==================== -->
+	<xacro:property name="proximity_sensor_mesh"              value="package://rhoa_sim/meshes/sensor.dae" />
+	<xacro:property name="proximity_sensor_material"          value="orange" />
+	<xacro:property name="proximity_sensor_mass"              value="0.1" />
+	<xacro:property name="proximity_sensor_size_x"            value="0.03" />
+	<xacro:property name="proximity_sensor_size_y"            value="0.03" />
+	<xacro:property name="proximity_sensor_size_z"            value="0.03" />
+	<xacro:property name="proximity_sensor_optic_offset"      value="0.014 0 0.014971" />
+
+	<!-- proximity sensor settings -->
+	<xacro:property name="proximity_sensor_visualize"         value="true" />
+	<xacro:property name="proximity_sensor_update_rate"       value="40" />
+	<xacro:property name="proximity_sensor_scan_sample"       value="40" />
+	<xacro:property name="proximity_sensor_scan_resolution"   value="1" />
+	<xacro:property name="proximity_sensor_scan_min_angle"    value="0.00872665" />
+	<xacro:property name="proximity_sensor_scan_max_angle"    value="-0.00872665" />
+	<xacro:property name="proximity_sensor_range_min"         value="0.06" />
+	<xacro:property name="proximity_sensor_range_max"         value="0.15" />
+	<xacro:property name="proximity_sensor_range_resolution"  value="0.01" />
+	<xacro:property name="proximity_sensor_noise_type"        value="gaussian" />
+	<xacro:property name="proximity_sensor_noise_mean"        value="0.0" />
+	<xacro:property name="proximity_sensor_noise_stddev"      value="0.01" />
+	<xacro:property name="proximity_sensor_topic_name"        value="proximity_sensor" />
+	<xacro:property name="proximity_sensor_noise_stddev"      value="0.01" />
+
+	<!-- Front proximity sensor -->
+	<xacro:property name="front_proximity_sensor_offset"      value="0.16265 0.0 0.16" />
+	<xacro:property name="front_proximity_sensor_rpy"         value="0 0 0" />
+
+	<!-- Left proximity sensor -->
+	<xacro:property name="left_proximity_sensor_offset"       value="0.15282 0.053393 0.16" />
+	<xacro:property name="left_proximity_sensor_rpy"          value="0 0 0.42738" />
+
+	<!-- Right proximity sensor -->
+	<xacro:property name="right_proximity_sensor_offset"      value="0.15282 -0.053393 0.16" />
+	<xacro:property name="right_proximity_sensor_rpy"         value="0 0 -0.42738" />
+
+
+	<!-- ================== -->
+	<!-- = LIDAR Settings = -->
+	<!-- ================== -->
+	<xacro:property name="lidar_mesh"             value="package://rhoa_sim/meshes/sensor.dae" />
+	<xacro:property name="lidar_material"         value="blue" />
+	<xacro:property name="lidar_mass"             value="0.1" />
+	<xacro:property name="lidar_size_x"           value="0.03" />
+	<xacro:property name="lidar_size_y"           value="0.03" />
+	<xacro:property name="lidar_size_z"           value="0.03" />
+	<xacro:property name="lidar_optic_offset"     value="0.014 0 0.014971" />
+
+	<xacro:property name="lidar_visualize"        value="false" />
+	<xacro:property name="lidar_update_rate"      value="40" />
+	<xacro:property name="lidar_scan_sample"      value="720" />
+	<xacro:property name="lidar_scan_resolution"  value="1" />
+	<xacro:property name="lidar_scan_min_angle"   value="${pi/2}" />
+	<xacro:property name="lidar_scan_max_angle"   value="-${pi/2}" />
+	<xacro:property name="lidar_range_min"        value="0.10" />
+	<xacro:property name="lidar_range_max"        value="30.0" />
+	<xacro:property name="lidar_range_resolution" value="0.01" />
+	<xacro:property name="lidar_noise_type"       value="gaussian" />
+	<xacro:property name="lidar_noise_mean"       value="0.0" />
+	<xacro:property name="lidar_noise_stddev"     value="0.01" />
+    <xacro:property name="lidar_topic_name"       value="lidar" />
+	<xacro:property name="lidar_noise_stddev"     value="0.01" />
+
+    <!-- Front LiDAR -->
+	<xacro:property name="front_lidar_offset"     value="0.16265 0 0.01" />
+	<xacro:property name="front_lidar_rpy"        value="0.0 0.0 0.0" />
+
+	<!-- DRIVE -->
+	<xacro:property name="drive_update_rate"       value="100" />
+	<xacro:property name="drive_torque"            value="0.1" />
+	<xacro:property name="command_topic"           value="cmd_vel" />
+	<xacro:property name="odometry_topic"          value="odom" />
+
+    <!-- ROS/Gazebo integration -->
+	<gazebo>
+		<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+		</plugin>
+	</gazebo>
+
+	<!-- =================================================================== -->
+	<!-- ==================== INSTANCIATION DU ROBOT  ====================== -->
+	<!-- =================================================================== -->
+
+	<xacro:m_chassis_cylinder />
+
+    <xacro:m_wheel prefix="right" offset="${right_wheel_offset}" />
+    <xacro:m_wheel prefix="left" offset="${left_wheel_offset}" />
+
+    <xacro:m_caster prefix="front" offset="${front_caster_offset}" />
+	<xacro:m_caster prefix="back"  offset="${back_caster_offset}" />
+
+    <xacro:m_camera prefix="front" offset="${front_camera_offset}" rpy="${front_camera_rpy}"/>
+
+    <xacro:m_proximity_sensor prefix="front"  offset="${front_proximity_sensor_offset}" rpy="${front_proximity_sensor_rpy}"/>
+    <xacro:m_proximity_sensor prefix="right"  offset="${right_proximity_sensor_offset}" rpy="${right_proximity_sensor_rpy}"/>
+    <xacro:m_proximity_sensor prefix="left"  offset="${left_proximity_sensor_offset}" rpy="${left_proximity_sensor_rpy}"/>
+
+    <xacro:m_lidar prefix="front"  offset="${front_lidar_offset}" rpy="${front_lidar_rpy}"/>
+
+	<xacro:m_differential_drive />
+
+</robot>

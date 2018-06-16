@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rhoa">
+	<!-- INCLUDE -->
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/inertia.xacro" />
+
+    <!-- FICHIER MACRO -->
+    <!-- Ce fichier definit des macros pour instancier une roue (ATTENTION: IL NE PEUT Y AVOIR QUE DEUX ROUES MOTRICES)  -->
+
+    <!-- Exemple d'utilisation:
+            <xacro:m_wheel prefix="right" offset="${right_wheel_offset}" />
+    -->
+
+    <!-- Pour chaque macro que vous utilisez, n'oubliez pas de copier:
+            * Une fois les parametres generaux
+                Ex:
+	                <xacro:property name="chassis_mesh"     value="package://rhoa_sim/meshes/chassis.dae" />
+
+            * Pour chaque instanciation de la macro, les parametres prennant un $PREFIX et remplacer $PREFIX par la valeur desiree
+                <xacro:property name="$PREFIX_camera_offset_x"  value="-0.044885" /> // Puis remplacer $PREFIX par front, par exemple
+    -->
+
+  <!-- ========================================================= -->
+  <!-- ====================  WHEEL MACRO  ====================== -->
+  <!-- ========================================================= -->
+
+    <!-- NOTE:-->
+    <!-- Pour les parametres, n'oubliez pas de remplacer $PREFIX par le prefix specifie lors de l'instanciation de la macro -->
+
+    <!-- PARAMETRES-->
+
+    <!-- A COPIER UNE FOIS DANS LE FICHIER -->
+    <!--
+	<xacro:property name="wheel_mesh"               value="package://rhoa_sim/meshes/wheel.dae" />
+	<xacro:property name="wheel_material"           value="black" />
+	<xacro:property name="wheel_mass"               value="1" />
+	<xacro:property name="wheel_length"             value="0.05" />
+	<xacro:property name="wheel_radius"             value="0.1" />
+	<xacro:property name="wheel_damping"            value="0.0" />
+    -->
+
+    <!-- CRITICAL -->
+    <!-- N'oubliez pas de specifier la distance qui separe les deux roues motrices -->
+    <!--
+	<xacro:property name="wheel_separation"         value="0.30" />
+    -->
+
+    <!-- A COPIER POUR CHAQUE INSTACIATION, en remplacant $PREFIX par des valeurs differentes pour chaque instanciation(Par exemple: front, left, ...) -->
+    <!--
+	<xacro:property name="$PREFIX_wheel_offset"     value="0.0 0.15 0.0" />
+    -->
+
+
+	<xacro:macro name="m_wheel" params="prefix offset">
+		<link name="${prefix}_wheel">
+			<visual>
+				<geometry>
+					<mesh filename="${wheel_mesh}" />
+				</geometry>
+				<material name="${wheel_material}" />
+			</visual>
+			<collision>
+				<geometry>
+					<cylinder length="${wheel_length}" radius="${wheel_radius}" />
+				</geometry>
+				<origin rpy="1.5708 0 0" xyz="0 0 0"/>
+			</collision>
+			<inertial>
+				<origin rpy="1.5708 0 0" xyz="0 0 0"/>
+				<mass value="${wheel_mass}" />
+				<xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_length}"/>
+			</inertial>
+		</link>
+		<joint name="${prefix}_wheel_hinge" type="continuous">
+			<parent link="chassis" />
+			<child link="${prefix}_wheel" />
+			<origin rpy="0 0 0" xyz="${offset}"/>
+			<axis xyz="0 1 0" />
+			<dynamics damping="${wheel_damping}" />
+		</joint>
+		<transmission name="${prefix}_wheel_transmission">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${prefix}_wheel_hinge">
+				<hardwareInterface>EffortJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${prefix}_wheel_joint_motor">
+				<hardwareInterface>EffortJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+				<motorTorqueConstant>1</motorTorqueConstant>
+			</actuator>
+		</transmission>
+		<gazebo reference="${prefix}_wheel">
+			<mu1 value="1.0"/>
+			<mu2 value="1.0"/>
+			<kp  value="10000000.0" />
+			<kd  value="1.0" />
+			<fdir1 value="1 0 0"/>
+			<material>Gazebo/Grey</material>
+		</gazebo>
+	</xacro:macro>
+
+</robot>

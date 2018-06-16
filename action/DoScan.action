@@ -1,0 +1,10 @@
+# Define the goal
+string  location
+int8    marker_id 
+---
+# Define the result
+uint8   terminalState 
+int8    marker_id
+---
+# Define a feedback message
+uint8   state 

@@ -1,0 +1,19 @@
+<launch>
+    <arg name="world" default="map"/>
+
+    <!-- Launch gazebo -->
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+		<arg name="world_name"      value="$(find rhoa_sim)/worlds/$(arg world).world"/>
+        <arg name="use_sim_time"    value="true"/>
+	</include>
+
+    <!-- Spawn multiple robots -->
+	<include file="$(find rhoa_sim)/launch/multirobots.launch" />
+
+	<!-- Visualization -->
+    <!-- Permet de visualiser les informations d'un robot -->
+    <include file="$(find rhoa_sim)/launch/rhoa_visualization.launch">
+    	<arg name="robot_name"  value="toto"/>
+	</include>
+
+</launch>

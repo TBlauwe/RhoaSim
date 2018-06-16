@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rhoa">
+	<!-- INCLUDE -->
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/inertia.xacro" />
+
+    <!-- FICHIER MACRO -->
+    <!-- Ce fichier definit des macros pour instancier une camera -->
+
+    <!-- Exemple d'utilisation:
+        <xacro:m_camera prefix="front" offset="${front_camera_offset}" rpy="${front_camera_rpy}"/>
+    -->
+
+    <!-- Pour chaque macro que vous utilisez, n'oubliez pas de copier:
+            * Une fois les parametres generaux
+                Ex:
+	                <xacro:property name="chassis_mesh"     value="package://rhoa_sim/meshes/chassis.dae" />
+
+            * Pour chaque instanciation de la macro, les parametres prennant un $PREFIX et remplacer $PREFIX par la valeur desiree
+                <xacro:property name="$PREFIX_camera_offset_x"  value="-0.044885" /> // Puis remplacer $PREFIX par front, par exemple
+    -->
+
+  <!-- ========================================================== -->
+  <!-- ====================  CAMERA MACRO  ====================== -->
+  <!-- ========================================================== -->
+
+    <!-- NOTE:-->
+    <!-- Pour les parametres, n'oubliez pas de remplacer $PREFIX par le prefix specifie lors de l'instanciation de la macro -->
+
+    <!-- PARAMETRES-->
+
+    <!-- A COPIER UNE FOIS DANS LE FICHIER -->
+    <!--
+    <xacro:property name="camera_mesh"              value="package://rhoa_sim/meshes/camera.dae" />
+	<xacro:property name="camera_material"          value="orange" />
+	<xacro:property name="camera_mass"              value="0.1" />
+	<xacro:property name="camera_size_x"            value="0.06" />
+	<xacro:property name="camera_size_y"            value="0.11" />
+	<xacro:property name="camera_size_z"            value="0.04" />
+	<xacro:property name="camera_optic_offset"      value="0.032895 0.0 0.022207" />
+
+	<xacro:property name="camera_visualize"         value="false" />
+	<xacro:property name="camera_update_rate"       value="30.0" />
+	<xacro:property name="camera_frame_rate"        value="30.0" />
+	<xacro:property name="camera_horizontal_fov"    value="2" />
+	<xacro:property name="camera_image_size_y"      value="1920" />
+	<xacro:property name="camera_image_size_z"      value="1080" />
+	<xacro:property name="camera_image_format"      value="R8G8B8" />
+	<xacro:property name="camera_clip_near"         value="0.02" />
+	<xacro:property name="camera_clip_far"          value="300" />
+	<xacro:property name="camera_noise_type"        value="gaussian" />
+	<xacro:property name="camera_noise_mean"        value="0.0" />
+	<xacro:property name="camera_noise_stddev"      value="0.007" />
+    <xacro:property name="camera_name"              value="camera" />
+	<xacro:property name="camera_image_topic_name"  value="image_raw" />
+	<xacro:property name="camera_info_topic_name"   value="camera_info" />
+    -->
+
+    <!-- A COPIER POUR CHAQUE INSTACIATION, en remplacant $PREFIX par des valeurs differentes pour chaque instanciation(Par exemple: front, left, ...) -->
+    <!--
+	<xacro:property name="front_camera_offset"    value="-0.044885 0.0 0.315" />
+	<xacro:property name="front_camera_rpy"        value="0.0 0.0 0.0" />
+    -->
+
+    <!-- MACRO -->
+	<xacro:macro name="m_camera" params="prefix offset rpy">
+		<link name="${prefix}_camera_anchor" />
+		<link name="${prefix}_camera">
+			<visual>
+				<geometry>
+					<mesh filename="${camera_mesh}" />
+				</geometry>
+				<material name="${camera_material}" />
+			</visual>
+			<collision>
+				<geometry>
+					<box size="${camera_size_x} ${camera_size_y} ${camera_size_z}"/>
+				</geometry>
+                <origin rpy="${rpy}" xyz="0 0 ${camera_size_z/2}"/>
+			</collision>
+			<inertial>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<mass value="${camera_mass}" />
+				<xacro:box_inertia m="${camera_mass}" x="${camera_size_x}"  y="${camera_size_y}" z="${camera_size_z}"/>
+			</inertial>
+		</link>
+		<joint name="${prefix}_camera_fixation" type="fixed">
+			<parent link="chassis" />
+			<child link="${prefix}_camera" />
+			<origin rpy="${rpy}" xyz="${offset}"/>
+			<axis xyz="0 0 0" />
+		</joint>
+		<joint name="${prefix}_camera_optic_fixation" type="fixed">
+			<parent link="${prefix}_camera" />
+			<child link="${prefix}_camera_anchor" />
+			<origin rpy="0 0 0" xyz="${camera_optic_offset}"/>
+			<axis xyz="0 0 0" />
+		</joint>
+		<gazebo reference="${prefix}_camera">
+			<material>Gazebo/Orange</material>
+		</gazebo>
+		<gazebo reference="${prefix}_camera_anchor">
+			<sensor type="camera" name="${prefix}_camera">
+				<visualize>${camera_visualize}</visualize>
+				<update_rate>${camera_update_rate}</update_rate>
+				<camera name="head">
+					<horizontal_fov>${camera_horizontal_fov}</horizontal_fov>
+					<image>
+						<size_y>${camera_image_size_y}</size_y>
+						<size_z>${camera_image_size_z}</size_z>
+						<format>${camera_image_format}</format>
+					</image>
+					<clip>
+						<near>${camera_clip_near}</near>
+						<far>${camera_clip_far}</far>
+					</clip>
+					<noise>
+						<type>${camera_noise_type}</type>
+						<mean>${camera_noise_mean}</mean>
+						<stddev>${camera_noise_stddev}</stddev>
+					</noise>
+				</camera>
+				<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+					<alwaysOn>true</alwaysOn>
+					<updateRate>${camera_frame_rate}</updateRate>
+                    <cameraName>${camera_name}/${prefix}</cameraName>
+                    <imageTopicName>${camera_image_topic_name}</imageTopicName>
+					<cameraInfoTopicName>${camera_info_topic_name}</cameraInfoTopicName>
+                    <frameName>${prefix}_${camera_name}</frameName>
+					<hackBaseline>0.07</hackBaseline>
+					<distortionK1>0.0</distortionK1>
+					<distortionK2>0.0</distortionK2>
+					<distortionK3>0.0</distortionK3>
+					<distortionT1>0.0</distortionT1>
+					<distortionT2>0.0</distortionT2>
+				</plugin>
+			</sensor>
+		</gazebo>
+	</xacro:macro>
+</robot>

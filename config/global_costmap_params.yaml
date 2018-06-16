@@ -1,0 +1,13 @@
+global_costmap:
+  global_frame: map 
+  robot_base_frame: chassis
+
+  static_map: true
+
+  width: 20.0
+  height: 20.0
+
+  resolution: 0.05
+
+  cost_scaling_factors: 2.58
+

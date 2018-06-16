@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rhoa">
+	<!-- INCLUDE -->
+	<xacro:include filename="$(find rhoa_sim)/robots/macros/inertia.xacro" />
+
+    <!-- FICHIER MACRO -->
+    <!-- Ce fichier definit des macros pour instancier une roulette (un "caster" en anglais) -->
+
+    <!-- Exemple d'utilisation:
+            <xacro:m_caster prefix="front" offset="${front_caster_offset}" />
+    -->
+
+    <!-- Pour chaque macro que vous utilisez, n'oubliez pas de copier:
+            * Une fois les parametres generaux
+                Ex:
+	                <xacro:property name="chassis_mesh"     value="package://rhoa_sim/meshes/chassis.dae" />
+
+            * Pour chaque instanciation de la macro, les parametres prennant un $PREFIX et remplacer $PREFIX par la valeur desiree
+                <xacro:property name="$PREFIX_camera_offset_x"  value="-0.044885" /> // Puis remplacer $PREFIX par front, par exemple
+    -->
+
+  <!-- ========================================================== -->
+  <!-- ====================  CASTER MACRO  ====================== -->
+  <!-- ========================================================== -->
+
+    <!-- NOTE:-->
+    <!-- Pour les parametres, n'oubliez pas de remplacer $PREFIX par le prefix specifie lors de l'instanciation de la macro -->
+
+    <!-- PARAMETRES-->
+
+    <!-- A COPIER UNE FOIS DANS LE FICHIER -->
+    <!--
+	<xacro:property name="caster_mass"              value="0.1" />
+	<xacro:property name="caster_radius"            value="0.02" />
+	<xacro:property name="caster_material"          value="red" />
+    -->
+
+    <!-- A COPIER POUR CHAQUE INSTACIATION, en remplacant $PREFIX par des valeurs differentes pour chaque instanciation(Par exemple: front, left, ...) -->
+    <!--
+	<xacro:property name="$PREFIX_caster_offset"      value="0.15 0.0 -0.08" />
+    -->
+
+	<xacro:macro name="m_caster" params="prefix offset">
+		<link name="${prefix}_caster">
+			<visual>
+				<geometry>
+					<sphere radius="${caster_radius}" />
+				</geometry>
+				<material name="${caster_material}" />
+			</visual>
+			<collision>
+				<geometry>
+					<sphere radius="${caster_radius}" />
+				</geometry>
+			</collision>
+			<inertial>
+				<origin rpy="0 0 0" xyz="0 0 0"/>
+				<mass value="${caster_mass}" />
+				<xacro:sphere_inertia m="${caster_mass}" r="${caster_radius}"/>
+			</inertial>
+		</link>
+		<joint name="${prefix}_caster_fixation" type="fixed">
+			<parent link="chassis" />
+			<child link="${prefix}_caster" />
+			<origin rpy="0 0 0" xyz="${offset}"/>
+			<axis xyz="0 0 0" />
+		</joint>
+		<gazebo reference="${prefix}_caster">
+			<mu1 value="0.0" />
+			<mu2 value="0.0" />
+			<material>Gazebo/Red</material>
+		</gazebo>
+	</xacro:macro>
+</robot>
